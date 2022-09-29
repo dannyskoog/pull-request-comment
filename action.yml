@@ -1,0 +1,18 @@
+name: 'PR comment'
+description: 'Post comments in pull requests'
+author: 'dannyskoog'
+inputs:
+  message:
+    description: 'Comment body'
+    required: true
+  marker:
+    description: 'Hidden text to look for in existing comments'
+    required: false
+    default: ''
+  token:
+    description: 'GitHub access token to use when posting the comment'
+    required: false
+    default: '${{ github.token }}'
+runs:
+  using: 'node16'
+  main: 'dist/index.js'
