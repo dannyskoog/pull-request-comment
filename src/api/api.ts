@@ -1,7 +1,7 @@
 import { GitHub } from '@actions/github/lib/utils';
 import { GetResponseDataTypeFromEndpointMethod } from '@octokit/types/dist-types/GetResponseTypeFromEndpointMethod';
 
-type Octokit = InstanceType<typeof GitHub>;
+export type Octokit = InstanceType<typeof GitHub>;
 export type IssueComment = GetResponseDataTypeFromEndpointMethod<InstanceType<typeof GitHub>['rest']['issues']['listComments']> extends (infer U)[] ? U : never;
 
 export const createIssueComment = async (octokit: Octokit, owner: string, repo: string, issueNumber: number, body: string) => {

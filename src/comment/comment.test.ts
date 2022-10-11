@@ -97,7 +97,7 @@ describe('postComment', () => {
 
   describe('given pr number is NaN', () => {
     beforeEach(() => {
-      getMockContext.mockReturnValueOnce({ ...mockContext, issue: { ...mockContext.issue, number: undefined as any }});
+      getMockContext.mockReturnValueOnce({ ...mockContext, issue: { ...mockContext.issue, number: undefined as any } });
     });
 
     test('sets action status to failed', async() => {
