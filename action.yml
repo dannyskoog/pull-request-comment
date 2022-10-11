@@ -1,6 +1,9 @@
-name: 'PR comment'
+name: 'Pull Request Comment'
 description: 'Post comments in pull requests'
 author: 'dannyskoog'
+branding:
+  icon: git-pull-request
+  color: purple
 inputs:
   message:
     description: 'Comment body'
