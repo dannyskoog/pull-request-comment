@@ -3,24 +3,7 @@ import * as github from "@actions/github";
 import { postComment } from './comment';
 import { createIssueComment, IssueComment, listIssueComments, updateIssueComment } from '../api/api';
 
-jest.mock('@actions/core', () => ({
-  setFailed: jest.fn(),
-}));
-
-jest.mock('@actions/github', () => ({
-  getOctokit: jest.fn(() => mockOctokit),
-  get context() {
-    return getMockContext();
-  },
-}));
-
-jest.mock('../api/api', () => ({
-  listIssueComments:jest.fn(() => Promise.resolve([])),
-  createIssueComment: jest.fn(() => Promise.resolve()),
-  updateIssueComment: jest.fn(() => Promise.resolve()),
-}));
-
-const mockOctokit = {};
+const mockOctokit = undefined;
 const mockContext = {
   repo: {
     repo: 'dummy-repo',
@@ -30,84 +13,102 @@ const mockContext = {
     number: 10,
   },
 };
-let getMockContext = jest.fn(() => mockContext);
 
-describe('postComment', () => {
-  const token = 'github-token';
-  const message = 'This is a message!';
-  let marker = '';
+jest.mock('../api/api');
 
-  describe('given marker is not provided', () => {
-    test('creates new comment', async() => {
-      const expectedBody = message;
+jest.mock('@actions/core', () => ({
+  setFailed: jest.fn(),
+}));
 
-      await postComment(token, marker, message);
+jest.mock('@actions/github');
+let actionsGithubMock = jest.requireMock('@actions/github');
+actionsGithubMock.getOctoKit = jest.fn(() => mockOctokit);
+actionsGithubMock.context = mockContext;
 
-      expect(core.setFailed).not.toBeCalled();
-      expect(github.getOctokit).toBeCalledWith(token);
-      expect(listIssueComments).not.toBeCalled();
-      expect(createIssueComment).toBeCalledWith(mockOctokit, mockContext.repo.owner, mockContext.repo.repo, mockContext.issue.number, expectedBody);
-      expect(updateIssueComment).not.toBeCalled();
-    });
+describe('comment', () => {
+  beforeEach(() => {
+    (createIssueComment as jest.Mock).mockResolvedValue(undefined);
+    (updateIssueComment as jest.Mock).mockResolvedValue(undefined);
+    (listIssueComments as jest.Mock).mockResolvedValue([]);
   });
 
-  describe('given marker is provided', () => {
-    beforeEach(() => {
-      marker = '<!-- some-unique-text -->';
-    });
+  describe('postComment', () => {
+    const token = 'github-token';
+    const message = 'This is a message!';
+    let marker = '';
 
-    describe('and no existing matching comment is found', () => {
+    describe('given marker is not provided', () => {
       test('creates new comment', async() => {
-        const expectedBody = `${message}\n\n${marker}`;
+        const expectedBody = message;
 
         await postComment(token, marker, message);
 
         expect(core.setFailed).not.toBeCalled();
         expect(github.getOctokit).toBeCalledWith(token);
-        expect(listIssueComments).toBeCalledWith(mockOctokit, mockContext.repo.owner, mockContext.repo.repo, mockContext.issue.number);
+        expect(listIssueComments).not.toBeCalled();
         expect(createIssueComment).toBeCalledWith(mockOctokit, mockContext.repo.owner, mockContext.repo.repo, mockContext.issue.number, expectedBody);
         expect(updateIssueComment).not.toBeCalled();
       });
     });
 
-    describe('and an existing matching comment is found', () => {
-      let existingComment: IssueComment;
-
+    describe('given marker is provided', () => {
       beforeEach(() => {
-        existingComment = {
-          id: 10,
-          body: `Existing comment\n\n${marker}`,
-        } as IssueComment;
-        (listIssueComments as jest.Mock).mockReturnValueOnce(Promise.resolve([existingComment]));
+        marker = '<!-- some-unique-text -->';
       });
 
-      test('updates comment', async() => {
-        const expectedBody = `${message}\n\n${marker}`;
+      describe('and no existing matching comment is found', () => {
+        test('creates new comment', async() => {
+          const expectedBody = `${message}\n\n${marker}`;
 
+          await postComment(token, marker, message);
+
+          expect(core.setFailed).not.toBeCalled();
+          expect(github.getOctokit).toBeCalledWith(token);
+          expect(listIssueComments).toBeCalledWith(mockOctokit, mockContext.repo.owner, mockContext.repo.repo, mockContext.issue.number);
+          expect(createIssueComment).toBeCalledWith(mockOctokit, mockContext.repo.owner, mockContext.repo.repo, mockContext.issue.number, expectedBody);
+          expect(updateIssueComment).not.toBeCalled();
+        });
+      });
+
+      describe('and an existing matching comment is found', () => {
+        let existingComment: IssueComment;
+
+        beforeEach(() => {
+          existingComment = {
+            id: 10,
+            body: `Existing comment\n\n${marker}`,
+          } as IssueComment;
+          (listIssueComments as jest.Mock).mockResolvedValue([existingComment]);
+        });
+
+        test('updates comment', async() => {
+          const expectedBody = `${message}\n\n${marker}`;
+
+          await postComment(token, marker, message);
+
+          expect(core.setFailed).not.toBeCalled();
+          expect(github.getOctokit).toBeCalledWith(token);
+          expect(listIssueComments).toBeCalledWith(mockOctokit, mockContext.repo.owner, mockContext.repo.repo, mockContext.issue.number);
+          expect(createIssueComment).not.toBeCalled();
+          expect(updateIssueComment).toBeCalledWith(mockOctokit, mockContext.repo.owner, mockContext.repo.repo, existingComment.id, expectedBody);
+        });
+      });
+    });
+
+    describe('given pr number is NaN', () => {
+      beforeEach(() => {
+        actionsGithubMock.context.issue.number = undefined;
+      });
+
+      test('sets action status to failed', async() => {
         await postComment(token, marker, message);
 
-        expect(core.setFailed).not.toBeCalled();
+        expect(core.setFailed).toBeCalledTimes(1);
         expect(github.getOctokit).toBeCalledWith(token);
-        expect(listIssueComments).toBeCalledWith(mockOctokit, mockContext.repo.owner, mockContext.repo.repo, mockContext.issue.number);
+        expect(listIssueComments).not.toBeCalled();
         expect(createIssueComment).not.toBeCalled();
-        expect(updateIssueComment).toBeCalledWith(mockOctokit, mockContext.repo.owner, mockContext.repo.repo, existingComment.id, expectedBody);
+        expect(updateIssueComment).not.toBeCalled();
       });
-    });
-  });
-
-  describe('given pr number is NaN', () => {
-    beforeEach(() => {
-      getMockContext.mockReturnValueOnce({ ...mockContext, issue: { ...mockContext.issue, number: undefined as any } });
-    });
-
-    test('sets action status to failed', async() => {
-      await postComment(token, marker, message);
-
-      expect(core.setFailed).toBeCalledTimes(1);
-      expect(github.getOctokit).toBeCalledWith(token);
-      expect(listIssueComments).not.toBeCalled();
-      expect(createIssueComment).not.toBeCalled();
-      expect(updateIssueComment).not.toBeCalled();
     });
   });
 });
