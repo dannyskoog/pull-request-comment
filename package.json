@@ -30,7 +30,7 @@
     "devDependencies": {
         "@octokit/types": "^9.2.0",
         "@tsconfig/node16": "^1.0.3",
-        "@types/jest": "^29.5.0",
+        "@types/jest": "^29.5.1",
         "@typescript-eslint/parser": "^5.58.0",
         "@vercel/ncc": "^0.36.1",
         "eslint": "^8.39.0",
