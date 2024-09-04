@@ -4,7 +4,7 @@
     "description": "A GitHub action for posting comments in pull requests",
     "main": "dist/index.js",
     "scripts": {
-        "build": "npm run lint && ncc build src/main.ts --source-map --license licenses.txt",
+        "build": "npm run lint && ncc build src/main.ts --minify",
         "lint": "eslint",
         "test": "jest"
     },
