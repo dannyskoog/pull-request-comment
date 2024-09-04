@@ -10,8 +10,9 @@ async function run() {
 
     // Post comment
     await postComment(token, marker, message);
-  } catch (error) {
-    const message = (error as any).message;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    const message = error.message;
     core.setFailed(message);
   }
 }

@@ -4,7 +4,7 @@ import { createIssueComment, IssueComment, listIssueComments, updateIssueComment
 
 export const postComment = async (token: string, marker: string, message: string) => {
   const octokit = github.getOctokit(token);
-  let { repo: { repo, owner }, issue: { number: prNumber } } = github.context;
+  const { repo: { repo, owner }, issue: { number: prNumber } } = github.context;
 
   if (isNaN(prNumber)) {
     core.setFailed('Pull request number could not be inferred from GitHub context. Please check that the event that triggered the workflow provides it');

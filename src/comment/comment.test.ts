@@ -21,7 +21,7 @@ jest.mock('@actions/core', () => ({
 }));
 
 jest.mock('@actions/github');
-let actionsGithubMock = jest.requireMock('@actions/github');
+const actionsGithubMock = jest.requireMock('@actions/github');
 actionsGithubMock.getOctoKit = jest.fn(() => mockOctokit);
 actionsGithubMock.context = mockContext;
 
