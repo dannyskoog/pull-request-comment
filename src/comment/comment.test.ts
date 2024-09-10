@@ -43,11 +43,11 @@ describe('comment', () => {
 
         await postComment(token, marker, message);
 
-        expect(core.setFailed).not.toBeCalled();
-        expect(github.getOctokit).toBeCalledWith(token);
-        expect(listIssueComments).not.toBeCalled();
-        expect(createIssueComment).toBeCalledWith(mockOctokit, mockContext.repo.owner, mockContext.repo.repo, mockContext.issue.number, expectedBody);
-        expect(updateIssueComment).not.toBeCalled();
+        expect(core.setFailed).not.toHaveBeenCalled();
+        expect(github.getOctokit).toHaveBeenCalledWith(token);
+        expect(listIssueComments).not.toHaveBeenCalled();
+        expect(createIssueComment).toHaveBeenCalledWith(mockOctokit, mockContext.repo.owner, mockContext.repo.repo, mockContext.issue.number, expectedBody);
+        expect(updateIssueComment).not.toHaveBeenCalled();
       });
     });
 
@@ -62,11 +62,11 @@ describe('comment', () => {
 
           await postComment(token, marker, message);
 
-          expect(core.setFailed).not.toBeCalled();
-          expect(github.getOctokit).toBeCalledWith(token);
-          expect(listIssueComments).toBeCalledWith(mockOctokit, mockContext.repo.owner, mockContext.repo.repo, mockContext.issue.number);
-          expect(createIssueComment).toBeCalledWith(mockOctokit, mockContext.repo.owner, mockContext.repo.repo, mockContext.issue.number, expectedBody);
-          expect(updateIssueComment).not.toBeCalled();
+          expect(core.setFailed).not.toHaveBeenCalled();
+          expect(github.getOctokit).toHaveBeenCalledWith(token);
+          expect(listIssueComments).toHaveBeenCalledWith(mockOctokit, mockContext.repo.owner, mockContext.repo.repo, mockContext.issue.number);
+          expect(createIssueComment).toHaveBeenCalledWith(mockOctokit, mockContext.repo.owner, mockContext.repo.repo, mockContext.issue.number, expectedBody);
+          expect(updateIssueComment).not.toHaveBeenCalled();
         });
       });
 
@@ -86,11 +86,11 @@ describe('comment', () => {
 
           await postComment(token, marker, message);
 
-          expect(core.setFailed).not.toBeCalled();
-          expect(github.getOctokit).toBeCalledWith(token);
-          expect(listIssueComments).toBeCalledWith(mockOctokit, mockContext.repo.owner, mockContext.repo.repo, mockContext.issue.number);
-          expect(createIssueComment).not.toBeCalled();
-          expect(updateIssueComment).toBeCalledWith(mockOctokit, mockContext.repo.owner, mockContext.repo.repo, existingComment.id, expectedBody);
+          expect(core.setFailed).not.toHaveBeenCalled();
+          expect(github.getOctokit).toHaveBeenCalledWith(token);
+          expect(listIssueComments).toHaveBeenCalledWith(mockOctokit, mockContext.repo.owner, mockContext.repo.repo, mockContext.issue.number);
+          expect(createIssueComment).not.toHaveBeenCalled();
+          expect(updateIssueComment).toHaveBeenCalledWith(mockOctokit, mockContext.repo.owner, mockContext.repo.repo, existingComment.id, expectedBody);
         });
       });
     });
@@ -103,11 +103,11 @@ describe('comment', () => {
       test('sets action status to failed', async() => {
         await postComment(token, marker, message);
 
-        expect(core.setFailed).toBeCalledTimes(1);
-        expect(github.getOctokit).toBeCalledWith(token);
-        expect(listIssueComments).not.toBeCalled();
-        expect(createIssueComment).not.toBeCalled();
-        expect(updateIssueComment).not.toBeCalled();
+        expect(core.setFailed).toHaveBeenCalledTimes(1);
+        expect(github.getOctokit).toHaveBeenCalledWith(token);
+        expect(listIssueComments).not.toHaveBeenCalled();
+        expect(createIssueComment).not.toHaveBeenCalled();
+        expect(updateIssueComment).not.toHaveBeenCalled();
       });
     });
   });

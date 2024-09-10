@@ -27,7 +27,7 @@ describe('api', () => {
 
       const createdComment = await createIssueComment(mockOctokit, owner, repo, issueNumber, body);
 
-      expect(mockOctokit.rest.issues.createComment).toBeCalledWith({ owner, repo, issue_number: issueNumber, body });
+      expect(mockOctokit.rest.issues.createComment).toHaveBeenCalledWith({ owner, repo, issue_number: issueNumber, body });
       expect(createdComment).toEqual(mockIssueComment);
     });
   });
@@ -38,7 +38,7 @@ describe('api', () => {
 
       const updatedComment = await updateIssueComment(mockOctokit, owner, repo, commentId, body);
     
-      expect(mockOctokit.rest.issues.updateComment).toBeCalledWith({ owner, repo, comment_id: commentId, body });
+      expect(mockOctokit.rest.issues.updateComment).toHaveBeenCalledWith({ owner, repo, comment_id: commentId, body });
       expect(updatedComment).toEqual(mockIssueComment);
     });
   });
@@ -49,7 +49,7 @@ describe('api', () => {
     
       const comments = await listIssueComments(mockOctokit, owner, repo, issueNumber);
       
-      expect(mockOctokit.rest.issues.listComments).toBeCalledWith({ owner, repo, issue_number: issueNumber });
+      expect(mockOctokit.rest.issues.listComments).toHaveBeenCalledWith({ owner, repo, issue_number: issueNumber });
       expect(comments).toEqual([mockIssueComment]);
     });
   });
