@@ -28,16 +28,16 @@
         "@actions/github": "^6.0.1"
     },
     "devDependencies": {
-        "@octokit/types": "^14.0.0",
-        "@stylistic/eslint-plugin-js": "^4.2.0",
-        "@tsconfig/node20": "^20.1.5",
-        "@types/jest": "^29.5.14",
+        "@octokit/types": "^14.1.0",
+        "@stylistic/eslint-plugin-js": "^4.4.1",
+        "@tsconfig/node20": "^20.1.6",
+        "@types/jest": "^30.0.0",
         "@vercel/ncc": "^0.38.3",
-        "eslint": "^9.26.0",
-        "jest": "^29.7.0",
-        "ts-jest": "^29.3.3",
+        "eslint": "^9.32.0",
+        "jest": "^30.0.5",
+        "ts-jest": "^29.4.0",
         "ts-node": "^10.9.2",
-        "typescript": "^5.8.3",
-        "typescript-eslint": "^8.32.1"
+        "typescript": "^5.9.2",
+        "typescript-eslint": "^8.38.0"
     }
 }
